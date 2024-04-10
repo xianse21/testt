@@ -38,6 +38,21 @@ class backtester:
             self.positions.append((symbol, position))
             #print(self.df[symbol])
         return self.positions
-      
+
+
+# Exemple de stratégie
+def simple_strategy(data):
+    # Exemple de stratégie simple : achat lorsque la moyenne mobile sur 50 jours est supérieure à la moyenne mobile sur 200 jours, et vente dans le cas contraire
+    data['50_MA'] = data['Close'].rolling(window=50).mean()
+    data['200_MA'] = data['Close'].rolling(window=200).mean()
+    data['Position'] = 0
+    data.loc[data['50_MA'] > data['200_MA'], 'Position'] = 1  # Achat
+    data.loc[data['50_MA'] < data['200_MA'], 'Position'] = -1  # Vente
+    return data['Position']
+
+# Exemple d'utilisation du backtester avec la stratégie simple
+backtester = backtester(strategy=simple_strategy)
+backtester.compute(["MSFT", "AAPL"], "2021-01-01","2023-12-31")
+
             
 
